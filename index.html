@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eaglercraft Clients</title>
+    <link id="main-favicon" rel="icon" type="image/x-icon"
+    href="https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/main.png" />
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            top: 0;
+            left: 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --item-bg: rgba(255, 255, 255, 0.1);
+            --item-hover: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: radial-gradient(circle at top right, #232440, #1a1b2d);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 25px rgba(243, 168, 71, 0.5);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #f3a847;
+            box-shadow: 0 0 15px rgba(243, 168, 71, 0.2);
+        }
+
+        .category {
+            margin-bottom: 2rem;
+            opacity: 0.92;
+            transition: opacity 0.25s ease;
+        }
+
+        .category.hidden {
+            display: none;
+        }
+
+        .category h2 {
+            color: rgba(243,168,71,0.9);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .item {
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .item:hover {
+            transform: translateY(-6px);
+            background: var(--item-hover);
+            border-color: #e48f34;
+            box-shadow: 
+                0 4px 25px rgba(0, 0, 0, 0.15),
+                0 0 20px rgba(243, 168, 71, 0.2);
+        }
+
+        .item a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            display: block;
+            padding: 1.2rem 1.7rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .item:hover a {
+            color: #f3a847;
+        }
+
+        .version {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            h1 {
+                font-size: 2.1rem;
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: none;
+        }
+
+        .wisp-links {
+            margin: 1rem 0 2rem;
+            opacity: 0.95;
+            transition: opacity 0.25s ease;
+        }
+
+        .wisp-link {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--item-bg);
+            color: #fff;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+            font-size: 0.82rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+        }
+        
+        .wisp-link:hover {
+            background: var(--item-hover);
+            border-color: #e48f34;
+            box-shadow: 0 0 20px rgba(243, 168, 71, 0.2);
+            color: #f3a847;
+            transform: translateY(-3px);
+        }
+
+        .recommended-category {
+            margin-bottom: 3rem;
+        }
+
+        .recommended-category h2 {
+            font-size: 1.5rem;
+            color: #f3a847;
+            margin-bottom: 1.2rem;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .recommended-item {
+            border-radius: 14px;
+            min-height: 235px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+
+        .recommended-item a {
+            padding: 1.4rem;
+            min-height: 190px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-7px);
+            border-color: #f3a847;
+            box-shadow: 0 0 25px rgba(243, 168, 71, 0.25);
+        }
+
+        .primary-recommendation {
+            background: linear-gradient(135deg, rgba(243,168,71,0.25), rgba(255,255,255,0.06));
+            border: 1px solid rgba(243,168,71,0.85);
+            box-shadow: 0 0 24px rgba(243,168,71,0.13);
+            min-height: 205px;
+        }
+
+        .recommendation-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #1a1b2d;
+            background: #f3a847;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 14px;
+        }
+
+        .secondary-recommendation .recommendation-badge {
+            background: rgba(243, 168, 71, 0.2);
+            color: #f3a847;
+            border: 1px solid rgba(243, 168, 71, 0.5);
+        }
+
+        .recommended-name {
+            font-size: 1.35rem;
+            font-weight: 750;
+            margin-bottom: 4px;
+        }
+
+        .recommendation-description {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        .launch-label {
+            margin-top: auto;
+            padding-top: 15px;
+            color: #f3a847;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .recommended-item:hover .launch-label {
+            letter-spacing: 0.5px;
+        }
+
+        .primary-recommendation a {
+            min-height: 205px;
+            padding: 1.15rem;
+        }
+
+        .primary-recommendation .recommendation-badge {
+            font-size: 0.62rem;
+            padding: 4px 8px;
+            margin-bottom: 9px;
+        }
+
+        .primary-recommendation .recommended-name {
+            font-size: 1.12rem;
+        }
+
+        .primary-recommendation .recommendation-description {
+            font-size: 0.78rem;
+            margin-top: 7px;
+        }
+
+        .primary-recommendation .launch-label {
+            font-size: 0.8rem;
+            padding-top: 10px;
+        }
+
+        .category:hover {
+            opacity: 1;
+        }
+
+        .category .item {
+            background: rgba(255,255,255,0.045);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .category .item a {
+            color: rgba(255,255,255,0.92);
+            font-size: 0.94rem;
+        }
+
+        .category .item:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.09);
+        }
+
+        .mc-version {
+            display: inline-block;
+            margin-left: 9px;
+            padding: 2px 7px;
+            border-radius: 5px;
+            background: rgba(243,168,71,0.12);
+            border: 1px solid rgba(243,168,71,0.28);
+            color: rgba(243,168,71,0.9);
+            font-size: 0.72rem;
+            font-weight: 700;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .wisp-links h2 {
+            font-size: 1.05rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .wisp-links .category-container {
+            margin-top: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 650px) {
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .recommended-item,
+            .recommended-item a {
+                min-height: 210px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        #settings-button {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+
+        #settings-button:hover {
+            background: rgba(243,168,71,0.2);
+            border-color: #f3a847;
+            color: #f3a847;
+            transform: rotate(30deg);
+        }
+
+        #settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px;
+        }
+
+        #settings-overlay.active {
+            display: flex;
+        }
+
+        #settings-popup {
+            width: 100%;
+            max-width: 820px;
+            max-height: none;
+            overflow: visible;
+
+            padding: 27px;
+
+            background: #202136;
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 15px;
+
+            box-shadow: 0 15px 60px rgba(0,0,0,0.45);
+
+            animation: settingsAppear 0.2s ease;
+        }
+
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 30px;
+            min-height: 370px;
+        }
+
+        .settings-column {
+            min-width: 0;
+        }
+
+        .settings-favicon-column {
+            padding-right: 25px;
+            border-right: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .settings-title-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .settings-title-column .settings-section {
+            width: 100%;
+        }
+
+        .settings-title-column #custom-page-title {
+            margin-top: 5px;
+        }
+
+        .settings-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        #favicon-options {
+            gap: 3px;
+        }
+
+        .favicon-option {
+            padding: 7px 10px;
+        }
+
+        .favicon-preview {
+            flex-shrink: 0;
+        }
+
+        @keyframes settingsAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .settings-header h2 {
+            font-size: 1.35rem;
+            color: white;
+        }
+
+        #settings-close {
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.65);
+            font-size: 27px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        #settings-close:hover {
+            color: #f3a847;
+        }
+
+        .settings-section h3 {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: #f3a847;
+        }
+
+        #favicon-options {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .favicon-option {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .favicon-option:hover {
+            background: rgba(255,255,255,0.07);
+        }
+
+        .favicon-option input {
+            accent-color: #f3a847;
+            cursor: pointer;
+        }
+
+        .favicon-preview {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        #custom-favicon-url,
+        #custom-page-title {
+            width: 100%;
+            margin-top: 10px;
+            padding: 11px 12px;
+
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 8px;
+
+            color: white;
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        #custom-favicon-url:focus,
+        #custom-page-title:focus {
+            border-color: #f3a847;
+            box-shadow: 0 0 10px rgba(243,168,71,0.12);
+        }
+
+        #custom-favicon-url::placeholder,
+        #custom-page-title::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .settings-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 21px 0;
+        }
+
+        .settings-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 24px;
+            gap: 10px;
+        }
+
+        #settings-done {
+            background: #f3a847;
+            border: none;
+            border-radius: 7px;
+            padding: 9px 20px;
+            color: #1a1b2d;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #settings-done:hover {
+            background: #ffbd65;
+        }
+
+        #settings-footer {
+            justify-content: flex-end;
+        }
+
+        #settings-reset {
+            background: rgba(255, 90, 90, 0.12);
+            border: 1px solid rgba(255, 100, 100, 0.35);
+            border-radius: 7px;
+            padding: 9px 20px;
+            color: #ff9292;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #settings-reset:hover {
+            background: rgba(255, 90, 90, 0.22);
+            border-color: #ff7777;
+            color: #ffaaaa;
+        }
+
+        #reset-confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        #reset-confirm-overlay.active {
+            display: flex;
+        }
+
+        #reset-confirm-popup {
+            width: 100%;
+            max-width: 350px;
+            padding: 24px;
+            background: #202136;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 13px;
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5);
+            animation: settingsAppear 0.2s ease;
+        }
+
+        #reset-confirm-popup h2 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        #reset-confirm-popup p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .reset-confirm-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 23px;
+        }
+
+        #reset-cancel,
+        #reset-continue {
+            border-radius: 7px;
+            padding: 9px 17px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #reset-cancel {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        #reset-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #reset-continue {
+            background: #e45b5b;
+            border: 1px solid #e45b5b;
+            color: white;
+        }
+
+        #reset-continue:hover {
+            background: #f06c6c;
+            border-color: #f06c6c;
+        }
+
+        @media (max-width: 650px) {
+            #settings-overlay {
+                overflow-y: auto;
+                align-items: flex-start;
+            }
+
+            #settings-popup {
+                max-width: 420px;
+                padding: 19px;
+                margin: auto 0;
+            }
+
+            .settings-layout {
+                grid-template-columns: 1fr;
+                gap: 22px;
+                min-height: auto;
+            }
+
+            .settings-favicon-column {
+                padding-right: 0;
+                padding-bottom: 20px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.12);
+            }
+
+            .settings-title-column {
+                min-height: 150px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            #settings-button {
+                top: 12px;
+                right: 12px;
+            }
+
+            #settings-popup {
+                padding: 19px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <button id="settings-button" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="21" height="21"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V20h-2.4v-.21a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.5 15a1.7 1.7 0 0 0-1.55-1H6v-2.4h.95a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88L8.1 8.66l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1-1.55V5.6h2.4v.21a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.55 1H21v2.4h-.21a1.7 1.7 0 0 0-1.39 1z"
+                  transform="translate(-1.5 -1) scale(1.1)"></path>
+        </svg>
+    </button>
+
+    <div id="settings-overlay">
+        <div id="settings-popup">
+
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button id="settings-close" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="settings-layout">
+
+                <div class="settings-column settings-favicon-column">
+
+                    <div class="settings-section">
+                        <h3>Favicon</h3>
+
+                        <div id="favicon-options">
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="main" checked>
+                                <img class="favicon-preview" id="preview-main" src="" alt="">
+                                <span>Main (Default)</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="google">
+                                <img class="favicon-preview" id="preview-google" src="" alt="">
+                                <span>Google</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="classroom">
+                                <img class="favicon-preview" id="preview-classroom" src="" alt="">
+                                <span>Google Classroom</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="gmail">
+                                <img class="favicon-preview" id="preview-gmail" src="" alt="">
+                                <span>Gmail</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="classlink">
+                                <img class="favicon-preview" id="preview-classlink" src="" alt="">
+                                <span>ClassLink</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="docs">
+                                <img class="favicon-preview" id="preview-docs" src="" alt="">
+                                <span>Google Docs</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="drive">
+                                <img class="favicon-preview" id="preview-drive" src="" alt="">
+                                <span>Google Drive</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="skyward">
+                                <img class="favicon-preview" id="preview-skyward" src="" alt="">
+                                <span>Skyward</span>
+                            </label>
+
+                            <label class="favicon-option">
+                                <input type="radio" name="favicon" value="custom">
+                                <img class="favicon-preview" id="preview-custom" src="" alt="">
+                                <span>Custom Image</span>
+                            </label>
+
+                        </div>
+
+                        <input
+                            type="url"
+                            id="custom-favicon-url"
+                            placeholder="Enter image URL..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="settings-column settings-title-column">
+
+                    <div class="settings-section">
+                        <h3>Page Title</h3>
+
+                        <input
+                            type="text"
+                            id="custom-page-title"
+                            placeholder="Default: Client name"
+                            autocomplete="off"
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <div class="settings-footer">
+                        <button id="settings-done">Done</button>
+                        <button id="settings-reset">Reset</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="reset-confirm-overlay">
+            <div id="reset-confirm-popup">
+                <h2>Reset Settings?</h2>
+
+                <p>
+                    Are you sure you want to clear all saved launcher settings?
+                    This will reset your favicon, custom image URL, and all saved page titles.
+                </p>
+
+                <div class="reset-confirm-actions">
+                    <button id="reset-cancel">Cancel</button>
+                    <button id="reset-continue">Continue</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  
+    <div class="container">
+        <header>
+            <h1>Eaglercraft Client Launcher</h1>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search Eaglercraft Clients..." autocomplete="off">
+                
+            </div>
+        </header>
+
+        <div class="category-container recommended-grid">
+
+            <div class="item recommended-item primary-recommendation"
+                  client-name="Eagler Client 26.2 (Wisp)"
+                  append-url="L25kaXJtbjMvU3RhbmRhbG9uZS1FYWdsZXJjcmFmdC1GaWxlcy9yZWZzL2hlYWRzL21haW4vZWFnbGVyLWNsaWVudC13aXNwLTI2LjIuaHRtbA==">
+
+                <a href="#">
+                    <span class="recommendation-badge">TOP RECOMMENDATION</span>
+                    <span class="recommended-name">Eagler Client 26.2 (Wisp)</span>
+                    <span class="version">Modded client · Version 26.2</span>
+                    <span class="recommendation-description">
+                        With Wispcraft integration, letting client join normal Java servers
+                    </span>
+                    <span class="launch-label">Launch Client →</span>
+                </a>
+            </div>
+
+            <div class="item recommended-item secondary-recommendation"
+                  client-name="Eaglercraft 26.2"
+                  append-url="L25kaXJtbjMvU3RhbmRhbG9uZS1FYWdsZXJjcmFmdC1GaWxlcy9yZWZzL2hlYWRzL21haW4vZWFnbGVyY3JhZnQtMjYuMi5odG1s">
+
+                <a href="#">
+                    <span class="recommendation-badge">RECOMMENDED</span>
+                    <span class="recommended-name">Eaglercraft 26.2</span>
+                    <span class="version">Vanilla client · Version 26.2</span>
+                    <span class="recommendation-description">
+                        A vanilla Eaglercraft experience
+                    </span>
+                    <span class="launch-label">Launch Client →</span>
+                </a>
+            </div>
+
+        </div>
+        
+        <br>
+
+<div class="wisp-links" id="wisp-servers">
+		    <h2>Wisp Servers</h2>
+		    <div class="category-container">
+		        <div class="wisp-link" data-wisp="wss://anura.pro/">wss://anura.pro/</div>
+            <div class="wisp-link" data-wisp="wss://wisp.mercurywork.shop/">wss://wisp.mercurywork.shop/</div>
+		        <div class="wisp-link" data-wisp="wss://gointospace.app/wisp/">wss://gointospace.app/wisp/</div>
+            </div>
+        </div>
+
+        <div id="no-results" class="no-results">
+            No clients found
+        </div>
+        
+        <h2 id="normal-heading">Normal Clients</h2>
+        
+        <br>
+        
+        <div class="category">
+            <h2>Vanilla Clients</h2>
+            <div class="category-container">
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vZWFnbGVyMS4xMi5odG1s"><a>Eaglercraft<span class="mc-version"> 1.12.2</span></a></div>
+                <div class="item" append-url="L3Bvb2xvb3BvL0VhZ2xlcmNyYWZ0MS44LjgtU2luZ2xlcGxheWVyLU11bHRpcGxheWVyLS9yZWZzL2hlYWRzL21haW4vRWFnbGVyY3JhZnRYXzFfOF91MzlfT2ZmbGluZV9TaWduZWQuaHRtbA=="><a>Eaglercraft<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+          
+        <div class="category">
+            <h2>Modded Clients</h2>
+            <div class="category-container">
+                <div class="item" append-url="L25kaXJtbjMvU3RhbmRhbG9uZS1FYWdsZXJjcmFmdC1GaWxlcy9yZWZzL2hlYWRzL21haW4vZWFnbGVyLWNsaWVudC1uby13aXNwLTI2LjIuaHRtbA=="><a>Eagler Client (No Wisp)<span class="mc-version"> 26.2</span></a></div>
+                <div class="item" append-url="L0VsaXRlNHIvUmVzZW50LUNsaWVudC9yZWZzL2hlYWRzL21haW4vaW5kZXguaHRtbA=="><a>Resent Client v5.1<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vYXN0cmFjbGllbnQuaHRtbA=="><a>Astra Client<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L0ZsYW1lUFZQQ29kZXMvRmxhbWVDbGllbnQtMy44L3JlZnMvaGVhZHMvbWFpbi9GbGFtZUNsaWVudDMuOC5odG1s"><a>FlameClient v3.8<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vZmxhbWVjbGllbnQlMjAzLjcuaHRtbA=="><a>FlameClient v3.7<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vcGl4ZWwuaHRtbA=="><a>Pixel Client v2.1.2<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L1BleXRvblBsYXl6NTk1L1NoYWRvdy00LjAvcmVmcy9oZWFkcy9tYWluL2phdmFzY3JpcHQvU2hhZG93X0NsaWVudF9JbnRlcm5hdGlvbmFsLmh0bWw="><a>Shadow Client v4<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vU2hhZG93X0NsaWVudF8yLjVfMS44LjhfSW50ZXJuYXRpb25hbC5odG1s"><a>Shadow Client v2.5<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+
+        <br>
+        <h2 id="hacked-heading">Hacked Clients</h2>
+        
+        <br>
+        
+        <div class="category">
+            <h2>DragonX</h2>
+            <div class="category-container">
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vZHJhZ29ueHY1Lmh0bWw="><a>DragonX v5.1<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vZHJhZ29udjQuaHRtbA=="><a>DragonX v4<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vRHJhZ29uWCUyMFYzJTIwQ2xpZW50Lmh0bWw="><a>DragonX v2<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>UwU</h2>
+            <div class="category-container">
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vVXdVbGl0ZTIuaHRtbA=="><a>UwU Lite v2<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vVXdVLWNsaWVudC1iMi5odG1s"><a>UwU Client Beta v2<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vVXdVQ2xpZW50JTIwdjElMjBGdWxsLmh0bWw="><a>UwU Client v1<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Justin</h2>
+            <div class="category-container">
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vanVzdGludjMuaHRtbA=="><a>Justin Client v3<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vanVzdGluY2xpZW50Lmh0bWw="><a>Justin Client v1.2.4<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Other</h2>
+            <div class="category-container">
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vd3Vyc3RYLmh0bWw="><a>WurstX Client Beta v1<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vbW9vbmxpZ2h0Lmh0bWw="><a>MoonLight Client<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vUGlDbGllbnQuaHRtbA=="><a>PiClient v1<span class="mc-version"> 1.8.8</span></a></div>
+                <div class="item" append-url="L2VhZ2xlcmhhY2tzL2VhZ2xlcmhhY2tzLmdpdGh1Yi5pby9yZWZzL2hlYWRzL21haW4vbWV0ZW9yLmh0bWw="><a>MeteorX Beta v1.2<span class="mc-version"> 1.8.8</span></a></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const FAVICON_PRESETS = {
+            main: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/main.txt",
+            google: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/google.txt",
+            classroom: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/classroom.txt",
+            gmail: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/gmail.txt",
+            classlink: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/classlink.txt",
+            docs: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/docs.txt",
+            drive: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/drive.txt",
+            skyward: "https://raw.githubusercontent.com/ndirmn3/Standalone-Eaglercraft-Files/refs/heads/main/favicons/skyward.txt",
+        };
+
+        const FAVICON_DEFAULT_TITLES = {
+            main: '',
+            google: 'Google',
+            classroom: 'Home - Classroom',
+            gmail: 'Inbox',
+            classlink: 'My Apps',
+            docs: 'Google Docs',
+            drive: 'Google Drive',
+            skyward: 'Student Access',
+            custom: ''
+        };
+
+        const search = document.getElementById('search');
+        const categories = document.querySelectorAll('.category');
+        const items = document.querySelectorAll('.item');
+        const recommendedGrid = document.querySelector('.recommended-grid');
+        const wispServers = document.getElementById('wisp-servers');
+        const normalHeading = document.getElementById('normal-heading');
+        const hackedHeading = document.getElementById('hacked-heading');
+        const noResults = document.getElementById('no-results');
+
+        function filterClients(searchTerm) {
+            searchTerm = searchTerm.toLowerCase().trim();
+            let hasVisibleItems = false;
+            let hasVisibleRecommendations = false;
+
+            items.forEach(item => {
+                const isVisible = item.textContent.toLowerCase().includes(searchTerm);
+                item.style.display = isVisible ? '' : 'none';
+                if (isVisible) hasVisibleItems = true;
+                if (isVisible && item.classList.contains('recommended-item')) {
+                    hasVisibleRecommendations = true;
+                }
+            });
+
+            categories.forEach(category => {
+                const hasVisibleItem = Array.from(category.querySelectorAll('.item'))
+                    .some(item => item.style.display !== 'none');
+                category.style.display = hasVisibleItem ? '' : 'none';
+            });
+
+            const normalCategories = Array.from(categories).slice(0, 2);
+            const hackedCategories = Array.from(categories).slice(2);
+
+            normalHeading.style.display = normalCategories.some(category => category.style.display !== 'none') ? '' : 'none';
+            hackedHeading.style.display = hackedCategories.some(category => category.style.display !== 'none') ? '' : 'none';
+
+            recommendedGrid.style.display = hasVisibleRecommendations ? 'grid' : 'none';
+            wispServers.style.display = searchTerm === '' ? '' : 'none';
+            noResults.style.display = hasVisibleItems ? 'none' : 'block';
+        }
+
+        search.addEventListener('input', event => filterClients(event.target.value));
+        filterClients('');
+
+        const baseUrl = atob('aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29t');
+
+        const SETTINGS_KEY = 'eaglercraftLauncherSettings';
+
+        const settingsOverlay = document.getElementById('settings-overlay');
+        const settingsButton = document.getElementById('settings-button');
+        const settingsClose = document.getElementById('settings-close');
+        const settingsDone = document.getElementById('settings-done');
+        const settingsReset = document.getElementById('settings-reset');
+        const resetConfirmOverlay = document.getElementById('reset-confirm-overlay');
+        const resetCancelButton = document.getElementById('reset-cancel');
+        const resetContinueButton = document.getElementById('reset-continue');
+
+        const customFaviconInput = document.getElementById('custom-favicon-url');
+        const customTitleInput = document.getElementById('custom-page-title');
+
+        const mainFavicon = document.getElementById('main-favicon');
+
+        const defaultSettings = {
+            favicon: 'main',
+            customFavicon: '',
+            customTitles: {}
+        };
+
+        let launcherSettings = { ...defaultSettings };
+
+        try {
+            const savedSettings = localStorage.getItem(SETTINGS_KEY);
+
+            if (savedSettings) {
+                const parsedSettings = JSON.parse(savedSettings);
+
+                launcherSettings = {
+                    ...defaultSettings,
+                    ...parsedSettings
+                };
+
+                launcherSettings.customTitles =
+                    parsedSettings.customTitles &&
+                    typeof parsedSettings.customTitles === 'object'
+                        ? { ...parsedSettings.customTitles }
+                        : {};
+
+                if (
+                    ![
+                        'main',
+                        'google',
+                        'classroom',
+                        'gmail',
+                        'classlink',
+                        'docs',
+                        'drive',
+                        'skyward',
+                        'custom'
+                    ].includes(launcherSettings.favicon)
+                ) {
+                    launcherSettings.favicon = 'main';
+                }
+
+                if (
+                    typeof parsedSettings.customTitle === 'string' &&
+                    parsedSettings.customTitle.trim() &&
+                    !Object.prototype.hasOwnProperty.call(
+                        launcherSettings.customTitles,
+                        launcherSettings.favicon
+                    )
+                ) {
+                    launcherSettings.customTitles[launcherSettings.favicon] =
+                        parsedSettings.customTitle;
+                }
+
+                delete launcherSettings.customTitle;
+            }
+        } catch (error) {
+            console.error('Could not restore launcher settings:', error);
+        }
+
+        const openedClientTabs = new Map();
+
+        async function resolveFavicon(mode, customUrl = '') {
+            if (mode === 'custom') {
+                return customUrl.trim() ||
+                    await resolveFavicon('main');
+            }
+
+            const sourceUrl = FAVICON_PRESETS[mode];
+
+            if (!sourceUrl || sourceUrl.startsWith('PASTE_')) {
+                return '';
+            }
+
+            try {
+                const response = await fetch(sourceUrl);
+
+                if (!response.ok) {
+                    throw new Error('Favicon file could not be loaded');
+                }
+
+                return (await response.text()).trim();
+            } catch (error) {
+                console.error('Favicon loading error:', error);
+                return '';
+            }
+        }
+
+        const squareFaviconCache = new Map();
+
+        async function makeSquareFavicon(faviconUrl) {
+            if (!faviconUrl) return '';
+
+            if (squareFaviconCache.has(faviconUrl)) {
+                return squareFaviconCache.get(faviconUrl);
+            }
+
+            const conversion = new Promise(resolve => {
+                const image = new Image();
+
+                image.crossOrigin = 'anonymous';
+
+                image.onload = () => {
+                    try {
+                        const size = 128;
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+
+                        const context = canvas.getContext('2d');
+
+                        if (
+                            !context ||
+                            !image.naturalWidth ||
+                            !image.naturalHeight
+                        ) {
+                            resolve(faviconUrl);
+                            return;
+                        }
+
+                        const scale = Math.min(
+                            size / image.naturalWidth,
+                            size / image.naturalHeight
+                        );
+
+                        const width = image.naturalWidth * scale;
+                        const height = image.naturalHeight * scale;
+
+                        const x = (size - width) / 2;
+                        const y = (size - height) / 2;
+
+                        context.drawImage(
+                            image,
+                            x,
+                            y,
+                            width,
+                            height
+                        );
+
+                        resolve(canvas.toDataURL('image/png'));
+
+                    } catch (error) {
+                        console.warn('Could not convert favicon:', error);
+                        resolve(faviconUrl);
+                    }
+                };
+
+                image.onerror = () => resolve(faviconUrl);
+
+                image.src = faviconUrl;
+            });
+
+            squareFaviconCache.set(faviconUrl, conversion);
+
+            return await conversion;
+        }
+
+        function setFavicon(documentRef, faviconUrl) {
+            if (!documentRef || !documentRef.head || !faviconUrl) return;
+
+            const faviconLinks = documentRef.querySelectorAll(
+                'link[rel~="icon"]'
+            );
+
+            if (faviconLinks.length === 0) {
+                const favicon = documentRef.createElement('link');
+
+                favicon.rel = 'icon';
+                favicon.href = faviconUrl;
+
+                documentRef.head.appendChild(favicon);
+                return;
+            }
+
+            faviconLinks.forEach(favicon => {
+                if (favicon.href !== faviconUrl) {
+                    favicon.href = faviconUrl;
+                }
+
+                favicon.removeAttribute('type');
+            });
+        }
+
+        function startFaviconRetries(tab, faviconUrl) {
+            if (!tab || tab.closed || !faviconUrl) return;
+
+            if (tab.__launcherFaviconRetryTimer) {
+                clearInterval(tab.__launcherFaviconRetryTimer);
+                tab.__launcherFaviconRetryTimer = null;
+            }
+
+            const retryDuration = 45000;
+            const retryInterval = 1000;
+
+            const startTime = Date.now();
+
+            function attemptSetFavicon() {
+                if (tab.closed) {
+                    clearInterval(tab.__launcherFaviconRetryTimer);
+                    tab.__launcherFaviconRetryTimer = null;
+                    return;
+                }
+
+                try {
+                    setFavicon(tab.document, faviconUrl);
+                } catch (error) {
+                    console.error('Favicon retry error:', error);
+                }
+
+                if (Date.now() - startTime >= retryDuration) {
+                    clearInterval(tab.__launcherFaviconRetryTimer);
+                    tab.__launcherFaviconRetryTimer = null;
+                }
+            }
+
+            attemptSetFavicon();
+
+            if (!tab.closed) {
+                tab.__launcherFaviconRetryTimer = setInterval(
+                    attemptSetFavicon,
+                    retryInterval
+                );
+            }
+        }
+
+        async function updateFaviconPreviews() {
+            const presets = Object.keys(FAVICON_PRESETS);
+
+            const previewResults = await Promise.all(
+                presets.map(async preset => {
+                    const resolvedUrl = await resolveFavicon(preset);
+                    const url = await makeSquareFavicon(resolvedUrl);
+
+                    return {
+                        preset: preset,
+                        url: url
+                    };
+                })
+            );
+
+            previewResults.forEach(result => {
+                const preview = document.getElementById(
+                    'preview-' + result.preset
+                );
+
+                if (preview) {
+                    preview.src = result.url || '';
+                }
+            });
+
+            updateCustomPreview();
+        }
+
+        let customPreviewRequest = 0;
+
+        async function updateCustomPreview() {
+            const preview = document.getElementById('preview-custom');
+
+            if (!preview) return;
+
+            const url = customFaviconInput.value.trim();
+            const requestVersion = ++customPreviewRequest;
+
+            if (!url) {
+                preview.removeAttribute('src');
+                return;
+            }
+
+            const squareUrl = await makeSquareFavicon(url);
+
+            if (requestVersion === customPreviewRequest) {
+                preview.src = squareUrl || '';
+            }
+        }
+
+        async function applyLauncherSettings() {
+            const requestVersion = ++faviconSettingsVersion;
+
+            const selectedFavicon = launcherSettings.favicon;
+            const selectedCustomFavicon = launcherSettings.customFavicon;
+
+            const resolvedUrl = await resolveFavicon(
+                selectedFavicon,
+                selectedCustomFavicon
+            );
+
+            const faviconUrl = await makeSquareFavicon(resolvedUrl);
+
+            if (requestVersion !== faviconSettingsVersion) return;
+
+            currentResolvedFavicon = faviconUrl;
+
+            const mainPageTitle = getTitleForFavicon(
+                launcherSettings.favicon
+            ).trim() || 'Eaglercraft Clients';
+
+            if (document.title !== mainPageTitle) {
+                document.title = mainPageTitle;
+            }
+
+            if (faviconUrl) {
+                setFavicon(document, faviconUrl);
+            }
+
+            for (const [tab, clientName] of openedClientTabs) {
+                try {
+                    if (tab.closed) {
+                        if (tab.__launcherFaviconRetryTimer) {
+                            clearInterval(tab.__launcherFaviconRetryTimer);
+                        }
+
+                        openedClientTabs.delete(tab);
+                        continue;
+                    }
+
+                    applySettingsToClientTab(
+                        tab,
+                        clientName,
+                        faviconUrl
+                    );
+
+                    startFaviconRetries(tab, faviconUrl);
+
+                } catch (error) {
+                    console.error('Could not update client tab:', error);
+                }
+            }
+        }
+
+        function applySettingsToClientTab(tab, clientName, faviconUrl) {
+            if (!tab || tab.closed) return;
+
+            try {
+                const doc = tab.document;
+
+                if (!doc || !doc.head) return;
+
+                const title = getTitleForFavicon(
+                    launcherSettings.favicon
+                ).trim() || clientName;
+
+                if (doc.title !== title) {
+                    doc.title = title;
+                }
+
+                if (faviconUrl) {
+                    setFavicon(doc, faviconUrl);
+                }
+
+            } catch (error) {
+                console.error('Client tab settings error:', error);
+            }
+        }
+
+        function registerLauncherTab(tab, clientName) {
+            if (!tab || tab.closed) return;
+
+            openedClientTabs.set(tab, clientName);
+
+            applyLauncherSettings();
+
+            try {
+                if (tab.__launcherSettingsObserver) {
+                    tab.__launcherSettingsObserver.disconnect();
+                }
+
+                const observer = new MutationObserver(() => {
+                    if (tab.closed) {
+                        observer.disconnect();
+                        openedClientTabs.delete(tab);
+                        return;
+                    }
+
+                    applySettingsToClientTab(
+                        tab,
+                        clientName,
+                        currentResolvedFavicon
+                    );
+                });
+
+                observer.observe(tab.document, {
+                    subtree: true,
+                    childList: true,
+                    attributes: true,
+                    attributeFilter: ['href', 'rel', 'type']
+                });
+
+                tab.__launcherSettingsObserver = observer;
+
+            } catch (error) {
+                console.error('Could not observe client tab:', error);
+            }
+
+        }
+
+        let currentResolvedFavicon = '';
+        let faviconSettingsVersion = 0;
+
+        function getTitleForFavicon(mode) {
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    launcherSettings.customTitles,
+                    mode
+                )
+            ) {
+                return launcherSettings.customTitles[mode] ?? '';
+            }
+
+            return FAVICON_DEFAULT_TITLES[mode] || '';
+        }
+
+        function loadTitleForFavicon(mode) {
+            customTitleInput.value = getTitleForFavicon(mode);
+        }
+
+        function persistLauncherSettings() {
+            try {
+                localStorage.setItem(
+                    SETTINGS_KEY,
+                    JSON.stringify(launcherSettings)
+                );
+            } catch (error) {
+                console.error('Could not save launcher settings:', error);
+            }
+        }
+
+        function openResetConfirmation() {
+            resetConfirmOverlay.classList.add('active');
+        }
+
+        function closeResetConfirmation() {
+            resetConfirmOverlay.classList.remove('active');
+        }
+
+        function resetLauncherSettings() {
+            try {
+                localStorage.removeItem(SETTINGS_KEY);
+            } catch (error) {
+                console.error('Could not reset launcher settings:', error);
+                alert('Could not reset settings. Check your browser storage permissions.');
+                return;
+            }
+
+            launcherSettings = {
+                favicon: 'main',
+                customFavicon: '',
+                customTitles: {}
+            };
+
+            document.querySelectorAll('input[name="favicon"]').forEach(input => {
+                input.checked = input.value === 'main';
+            });
+
+            customFaviconInput.value = '';
+            customTitleInput.value = '';
+
+            updateCustomPreview();
+
+            closeResetConfirmation();
+
+            applyLauncherSettings();
+        }
+
+        function openSettings() {
+
+            document.querySelectorAll('input[name="favicon"]').forEach(input => {
+                input.checked = input.value === launcherSettings.favicon;
+            });
+
+            customFaviconInput.value = launcherSettings.customFavicon;
+            loadTitleForFavicon(launcherSettings.favicon);
+
+            updateCustomPreview();
+
+            settingsOverlay.classList.add('active');
+        }
+
+        function closeSettings() {
+            const selectedFavicon = document.querySelector(
+                'input[name="favicon"]:checked'
+            );
+
+            launcherSettings.favicon = selectedFavicon
+                ? selectedFavicon.value
+                : 'main';
+
+            launcherSettings.customFavicon =
+                customFaviconInput.value.trim();
+
+            persistLauncherSettings();
+
+            settingsOverlay.classList.remove('active');
+
+            applyLauncherSettings();
+        }
+
+        settingsButton.addEventListener('click', openSettings);
+
+        settingsReset.addEventListener('click', openResetConfirmation);
+
+        resetCancelButton.addEventListener('click', closeResetConfirmation);
+
+        resetContinueButton.addEventListener('click', resetLauncherSettings);
+
+        resetConfirmOverlay.addEventListener('click', event => {
+            if (event.target === resetConfirmOverlay) {
+                closeResetConfirmation();
+            }
+        });
+
+        settingsClose.addEventListener('click', closeSettings);
+        settingsDone.addEventListener('click', closeSettings);
+
+        settingsOverlay.addEventListener('click', event => {
+            if (event.target === settingsOverlay) {
+                closeSettings();
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key !== 'Escape') return;
+
+            if (resetConfirmOverlay.classList.contains('active')) {
+                closeResetConfirmation();
+                return;
+            }
+
+            if (settingsOverlay.classList.contains('active')) {
+                closeSettings();
+            }
+        });
+
+        document.querySelectorAll('input[name="favicon"]').forEach(input => {
+            input.addEventListener('change', () => {
+                launcherSettings.favicon = input.value;
+
+                launcherSettings.customFavicon =
+                    customFaviconInput.value.trim();
+
+                loadTitleForFavicon(input.value);
+
+                persistLauncherSettings();
+
+                applyLauncherSettings();
+            });
+        });
+
+        customFaviconInput.addEventListener('input', () => {
+            updateCustomPreview();
+
+            const wasCustom = launcherSettings.favicon === 'custom';
+
+            launcherSettings.customFavicon =
+                customFaviconInput.value.trim();
+
+            if (!wasCustom) {
+                const customRadio = document.querySelector(
+                    'input[name="favicon"][value="custom"]'
+                );
+
+                customRadio.checked = true;
+                launcherSettings.favicon = 'custom';
+
+                loadTitleForFavicon('custom');
+            }
+
+            applyLauncherSettings();
+        });
+
+        customTitleInput.addEventListener('input', () => {
+            launcherSettings.customTitles[launcherSettings.favicon] =
+                customTitleInput.value.trim();
+
+            persistLauncherSettings();
+
+            applyLauncherSettings();
+        });
+
+        updateFaviconPreviews();
+        applyLauncherSettings();
+
+        window.getCurrentLauncherFavicon = async function() {
+            const resolvedUrl = await resolveFavicon(
+                launcherSettings.favicon,
+                launcherSettings.customFavicon
+            );
+
+            return await makeSquareFavicon(resolvedUrl);
+        };
+
+        document.querySelectorAll('.item a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const item = this.closest('.item');
+
+                const clientName =
+                    item.getAttribute('client-name') ||
+                    this.textContent.trim();
+
+                const appendUrl = atob(
+                    item.getAttribute('append-url') || ''
+                );
+
+                const safeClientName = JSON.stringify(clientName);
+                const safeFullUrl = JSON.stringify(baseUrl + appendUrl);
+
+                const newBlankTab = window.open('about:blank', '_blank');
+
+                if (!newBlankTab) {
+                    alert(
+                        'Allow pop-ups at the right of the search bar. Then reload the page.'
+                    );
+                    return;
+                }
+
+                registerLauncherTab(newBlankTab, clientName);
+
+                const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${clientName.replace(/[&<>"']/g, character => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+                    }[character]))}</title>
+                </head>
+                <body>
+                    <script>
+                        const clientName = ${safeClientName};
+                        const fullUrl = ${safeFullUrl};
+
+                        async function fetchAndRun() {
+                            try {
+                                const response = await fetch(fullUrl);
+
+                                if (!response.ok) {
+                                    alert('Failed to fetch URL. Check your internet connection.');
+                                    return;
+                                }
+
+                                const html = await response.text();
+
+                                document.open();
+                                document.write(html);
+                                document.close();
+
+                                document.title = clientName;
+
+                            } catch (error) {
+                                console.error('Error fetching the code:', error);
+                                alert('Error fetching the code. Check your internet connection.');
+                            }
+                        }
+
+                        fetchAndRun();
+
+                    <\/script>
+                </body>
+                </html>`;
+
+                newBlankTab.document.open();
+                newBlankTab.document.write(htmlContent);
+                newBlankTab.document.close();
+            });
+        });
+
+        document.querySelectorAll('.wisp-link').forEach(link => {
+            link.addEventListener('click', async () => {
+                const text = link.dataset.wisp;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    const originalText = link.textContent;
+                    link.textContent = 'Copied to clipboard!';
+                    setTimeout(() => link.textContent = originalText, 1200);
+                } catch (error) {
+                    prompt('Copy this Wisp Server:', text);
+                }
+            });
+        });
+
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 100, density: { enable: true, value_area: 800 } },
+                color: { value: '#f3a847' },
+                shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                opacity: { value: 0.5, random: false, anim: { enable: true, speed: 1, opacity_min: 0.25 } },
+                size: { value: 4, random: true, anim: { enable: true, speed: 4, size_min: 0.25 } },
+                line_linked: { enable: true, distance: 150, color: '#f3a847', opacity: 0.4, width: 1.5 },
+                move: { enable: true, speed: 4, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+            },
+            interactivity: {
+                detect_on: 'window',
+                events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false, mode: 'push' } }
+            },
+            retina_detect: true
+        });
+    </script>
+</html>
